@@ -1,12 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:volcengine_native/volcengine_native.dart';
+import 'package:ve_apm/ve_apm.dart';
+import 'package:ve_onekit/services/services.dart' as OKService;
 
 void main() {
-  runApp(const MyApp());
+  // runApp(const MyApp());
+
+  runTraceApp((observer) {
+    HttpOverrides.global = ApmHttpOverrides(); //开启网络监控，如果不需要网络监控则不设置
+    return MyApp(navigatorObserver: observer);
+  });
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final NavigatorObserver navigatorObserver;
+
+  const MyApp({Key? key, required this.navigatorObserver}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -21,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [widget.navigatorObserver],
       home: Scaffold(
         appBar: AppBar(
           title: const Text('火山引擎'),
@@ -65,7 +77,21 @@ class _MyAppState extends State<MyApp> {
                     debugPrint("initVolcEngine error : $e");
                   }
                 },
-                child: const Text('写日志')),
+                child: const Text('向原生写日志')),
+            ElevatedButton(
+                onPressed: () {
+                  try {
+                    final _alog = OKService.serviceManager
+                        .getService<OKService.VeAlog>()!;
+                    _alog.debug(tag: 'test', message: 'debug');
+                    _alog.info(tag: 'test', message: 'info');
+                    _alog.warn(tag: 'test', message: 'warn');
+                    _alog.error(tag: 'test', message: 'error');
+                  } catch (e) {
+                    debugPrint("initVolcEngine error : $e");
+                  }
+                },
+                child: const Text('Flutter写日志')),
           ],
         ),
       ),

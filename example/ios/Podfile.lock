@@ -1,12 +1,42 @@
 PODS:
   - Flutter (1.0.0)
+  - OneKit (1.4.2):
+    - OneKit/BaseKit (= 1.4.2)
+    - OneKit/Core (= 1.4.2)
+    - OneKit/MARS/Auth (= 1.4.2)
+    - OneKit/Service (= 1.4.2)
   - OneKit/BaseKit (1.4.2):
     - OneKit/Service
+  - OneKit/boringssl (1.4.2):
+    - OneKit/Service
+  - OneKit/Core (1.4.2):
+    - OneKit/BaseKit
+    - OneKit/MARS
+    - OneKit/Network
+    - OneKit/Registar
   - OneKit/Database (1.4.2):
+    - OneKit/Service
+  - OneKit/MARS (1.4.2):
+    - OneKit/MARS/Auth (= 1.4.2)
+  - OneKit/MARS/Auth (1.4.2):
+    - OneKit/BaseKit
+    - OneKit/StartUp
+  - OneKit/Network (1.4.2):
+    - OneKit/MARS/Auth
+    - OneKit/OKModel
+    - OneKit/Service
+  - OneKit/OKModel (1.4.2):
     - OneKit/Service
   - OneKit/Reachability (1.4.2):
     - OneKit/Service
+  - OneKit/Registar (1.4.2):
+    - OneKit/boringssl
+  - OneKit/Section (1.4.2)
   - OneKit/Service (1.4.2)
+  - OneKit/StartUp (1.4.2):
+    - OneKit/Reachability
+    - OneKit/Section
+    - OneKit/Service
   - RangersAPM/Above (3.0.1)
   - RangersAPM/APMLog (3.0.1):
     - RangersAPM/Core
@@ -36,6 +66,8 @@ PODS:
     - RangersAPM/Core
     - RangersAPM/HMD
     - RangersAPM/Public
+  - RangersAPM/Flutter (3.0.1):
+    - RangersAPM/EventMonitor
   - RangersAPM/HMD (3.0.1):
     - OneKit/Database (>= 1.1.19)
     - RangersAPM/Core
@@ -92,9 +124,15 @@ PODS:
     - RangersAPM/Public
   - RangersAPM/Zip (3.0.1)
   - RangersAPM/Zyone (3.0.1)
-  - RARegisterKit/Core (0.0.7):
+  - RARegisterKit/Core (0.0.8):
     - OneKit/BaseKit
     - OneKit/Reachability
+  - ve_apm (0.0.1):
+    - Flutter
+    - RangersAPM/Flutter
+  - ve_onekit (0.0.1):
+    - Flutter
+    - OneKit
   - volcengine_native (0.0.1):
     - Flutter
     - RangersAPM/APMLog (= 3.0.1)
@@ -118,6 +156,8 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - ve_apm (from `.symlinks/plugins/ve_apm/ios`)
+  - ve_onekit (from `.symlinks/plugins/ve_onekit/ios`)
   - volcengine_native (from `.symlinks/plugins/volcengine_native/ios`)
 
 SPEC REPOS:
@@ -129,6 +169,10 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  ve_apm:
+    :path: ".symlinks/plugins/ve_apm/ios"
+  ve_onekit:
+    :path: ".symlinks/plugins/ve_onekit/ios"
   volcengine_native:
     :path: ".symlinks/plugins/volcengine_native/ios"
 
@@ -136,9 +180,11 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   OneKit: 05d59eb122e247640c35ceb28b300ae27e89cb88
   RangersAPM: c1e2b94eef39e14389c3c1dd43a8dd691cf50ef3
-  RARegisterKit: 63bb5e7a57a6479496bcfe155d149c18bdbcd3ab
+  RARegisterKit: c836d623dd2c67170591d929846a5070a0a05bc7
+  ve_apm: 08244d0dba233e7b0877e081e5cba2278b9e7966
+  ve_onekit: fa772851a16dc424b67bf8667543a5c7a948175c
   volcengine_native: fc9dce560577b6cb978ee483090728224b9f5c9c
 
-PODFILE CHECKSUM: 8e679eca47255a8ca8067c4c67aab20e64cb974d
+PODFILE CHECKSUM: 6251ff0a9fbcd7c52fe0156e604406fdb2f57224
 
 COCOAPODS: 1.11.2
