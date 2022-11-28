@@ -22,12 +22,11 @@ class VolcengineNative {
       required String appToken,
       String? channel}) async {
     try {
-      final path = await _channel.invokeMethod("init_volc_engine", {
+      await _channel.invokeMethod("init_volc_engine", {
         "appId": appId,
         "appToken": appToken,
         "channel": channel ?? (Platform.isIOS ? "App Store" : "Android"),
       });
-      return path;
     } on PlatformException catch (e) {
       debugPrint("initVolcEngine error: $e");
       rethrow;
@@ -37,12 +36,19 @@ class VolcengineNative {
   /*
   上报用户信息
    */
-  static Future<void> reportUserInfo({required String userId}) async {
+  static Future<void> reportUserInfo({
+    required String userId,
+    String? nickname,
+    String? env,
+  }) async {
     try {
-      final path = await _channel.invokeMethod("report_user_info", {
+      final reqData = {
         "userId": userId,
-      });
-      return path;
+        "nickname": nickname,
+        "env": env,
+      };
+      reqData.removeWhere((key, value) => value == null);
+      await _channel.invokeMethod("report_user_info", reqData);
     } on PlatformException catch (e) {
       debugPrint("updateReportInfo error: $e");
       rethrow;
@@ -54,8 +60,7 @@ class VolcengineNative {
    */
   static Future<void> enableRemoteLog() async {
     try {
-      final path = await _channel.invokeMethod("enable_remote_log", {});
-      return path;
+      await _channel.invokeMethod("enable_remote_log", {});
     } on PlatformException catch (e) {
       debugPrint("enableRemoteLog error: $e");
       rethrow;
@@ -70,11 +75,10 @@ class VolcengineNative {
     VolcenLogLevel level = VolcenLogLevel.debug,
   }) async {
     try {
-      final path = await _channel.invokeMethod("report_remote_log", {
+      await _channel.invokeMethod("report_remote_log", {
         "log": log,
         "level": level.name,
       });
-      return path;
     } on PlatformException catch (e) {
       debugPrint("reportLog error: $e");
       rethrow;

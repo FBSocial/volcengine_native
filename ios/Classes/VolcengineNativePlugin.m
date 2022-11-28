@@ -4,9 +4,7 @@
 #import "RangersAPM+ALog.h"
 
 @implementation VolcengineNativePlugin
-{
-    RangersAPMConfig *apmConfig;
-}
+
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
@@ -39,7 +37,7 @@
     NSString *appToken = [arguments objectForKey:@"appToken"];
     NSString *channel = [arguments objectForKey:@"channel"];
     
-    apmConfig = [RangersAPMConfig configWithAppID:appId appToken:appToken];
+    RangersAPMConfig *apmConfig = [RangersAPMConfig configWithAppID:appId appToken:appToken];
     apmConfig.channel = channel;
      
      /**
@@ -65,8 +63,16 @@
 
 -(void)uploadReportInfo:(NSDictionary*)arguments result:(FlutterResult)result{
     NSString *userId = [arguments objectForKey:@"userId"];
-    [RangersAPM setUserID:userId];
+    NSString *nickname = [arguments objectForKey:@"nickname"];
+    NSString *env = [arguments objectForKey:@"env"];
     
+    [RangersAPM setUserID:userId];
+    if(nickname != nil){
+        [RangersAPM setCustomContextValue:nickname forKey:@"nickname"];
+    }
+    if(env != nil){
+        [RangersAPM setCustomContextValue:env forKey:@"env"];
+    }
     result(@YES);
 }
 
