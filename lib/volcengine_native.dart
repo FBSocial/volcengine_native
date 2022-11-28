@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+enum VolcenLogLevel {
+  debug,
+  info,
+  warn,
+  error,
+}
 
 class VolcengineNative {
   static const MethodChannel _channel = MethodChannel('volcengine_native');
-
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
 
   /*
   初始化
@@ -26,6 +29,7 @@ class VolcengineNative {
       });
       return path;
     } on PlatformException catch (e) {
+      debugPrint("initVolcEngine error: $e");
       rethrow;
     }
   }
@@ -33,13 +37,46 @@ class VolcengineNative {
   /*
   上报用户信息
    */
-  static Future<void> updateReportInfo({required String userId}) async {
+  static Future<void> reportUserInfo({required String userId}) async {
     try {
-      final path = await _channel.invokeMethod("upload_report_info", {
+      final path = await _channel.invokeMethod("report_user_info", {
         "userId": userId,
       });
       return path;
     } on PlatformException catch (e) {
+      debugPrint("updateReportInfo error: $e");
+      rethrow;
+    }
+  }
+
+  /*
+  开启火山日志系统
+   */
+  static Future<void> enableRemoteLog() async {
+    try {
+      final path = await _channel.invokeMethod("enable_remote_log", {});
+      return path;
+    } on PlatformException catch (e) {
+      debugPrint("enableRemoteLog error: $e");
+      rethrow;
+    }
+  }
+
+  /*
+  上报日志
+   */
+  static Future<void> reportLog({
+    required String log,
+    VolcenLogLevel level = VolcenLogLevel.debug,
+  }) async {
+    try {
+      final path = await _channel.invokeMethod("report_remote_log", {
+        "log": log,
+        "level": level.name,
+      });
+      return path;
+    } on PlatformException catch (e) {
+      debugPrint("reportLog error: $e");
       rethrow;
     }
   }

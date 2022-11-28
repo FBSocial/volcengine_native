@@ -17,12 +17,18 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  }else if([@"init_volc_engine" isEqualToString: call.method]){
+  if([@"init_volc_engine" isEqualToString: call.method]){
+      //初始化
       [self initVolcEngine:call.arguments result:result];
-  }else if([@"upload_report_info" isEqualToString: call.method]){
-      [self initVolcEngine:call.arguments result:result];
+  }else if([@"report_user_info" isEqualToString: call.method]){
+      //更新日志用户用户信息
+      [self uploadReportInfo:call.arguments result:result];
+  }else if([@"enable_remote_log" isEqualToString: call.method]){
+      //开启日志上报
+      [self enableRemoteLog:result];
+  }else if([@"report_remote_log" isEqualToString: call.method]){
+      //日志上报
+      [self uploadLog:call.arguments result:result];
   }else {
     result(FlutterMethodNotImplemented);
   }
@@ -43,12 +49,11 @@
  3. 配置多个模块可以参考这种写法：RangersAPMCrashMonitorSwitch | RangersAPMNetworkMonitorSwitch | RangersAPMLaunchMonitorSwitch
       */
      apmConfig.defaultMonitors = RangersAPMCrashMonitorSwitch;
-     [RangersAPM startWithConfig:apmConfig];
     
 #if DEBUG
-        //通过修改block，您可以定制自己的日志输出格式，下述代码示例是SDK内部默认的输出格式，如果您传入nil，则SDK会使用默认的格式输出日志。
+    //通过修改block，您可以定制自己的日志输出格式，下述代码示例是SDK内部默认的输出格式，如果您传入nil，则SDK会使用默认的格式输出日志。
     [RangersAPM allowDebugLogUsingLogger:^(NSString * _Nonnull log) {
-        NSLog(@"APMInsight : %@", log);
+        NSLog(@"FBDebugLog : %@", log);
     }];
 #endif
     //请先于此代码开启debug日志，否则对于一些同步事件可能无法输出日志
@@ -61,9 +66,30 @@
 -(void)uploadReportInfo:(NSDictionary*)arguments result:(FlutterResult)result{
     NSString *userId = [arguments objectForKey:@"userId"];
     [RangersAPM setUserID:userId];
-//    [RangersAPM setALogEnabled];  //启用Alog
-//    [RangersAPM enableConsoleLog];  //同时在控制台输出日志
     
+    result(@YES);
+}
+
+-(void)enableRemoteLog:(FlutterResult)result{
+    [RangersAPM setALogEnabled];  //启用Alog
+    [RangersAPM enableConsoleLog];  //同时在控制台输出日志
+    
+    result(@YES);
+}
+
+-(void)uploadLog:(NSDictionary*)arguments result:(FlutterResult)result{
+    NSString *log = [arguments objectForKey:@"log"];
+    NSString *level = [arguments objectForKey:@"level"];
+    
+    if([level isEqualToString:@"debug"]){
+        RANGERSAPM_ALOG_DEBUG(@"FBLogger", log);
+    }else if([level isEqualToString:@"info"]){
+        RANGERSAPM_ALOG_INFO(@"FBLogger", log);
+    }else if([level isEqualToString:@"warn"]){
+        RANGERSAPM_ALOG_WARN(@"FBLogger", log);
+    }else if([level isEqualToString:@"error"]){
+        RANGERSAPM_ALOG_ERROR(@"FBLogger", log);
+    }
     result(@YES);
 }
 @end

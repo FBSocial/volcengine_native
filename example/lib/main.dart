@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:volcengine_native/volcengine_native.dart';
 
 void main() {
@@ -43,12 +40,32 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
                 onPressed: () {
                   try {
-                    VolcengineNative.updateReportInfo(userId: "appId");
+                    VolcengineNative.reportUserInfo(userId: "userID");
                   } catch (e) {
                     debugPrint("initVolcEngine error : $e");
                   }
                 },
                 child: const Text('更新上报用户ID')),
+            ElevatedButton(
+                onPressed: () {
+                  try {
+                    VolcengineNative.enableRemoteLog();
+                  } catch (e) {
+                    debugPrint("initVolcEngine error : $e");
+                  }
+                },
+                child: const Text('开启火山远程日志')),
+            ElevatedButton(
+                onPressed: () {
+                  try {
+                    VolcengineNative.reportLog(
+                        log: "log--- ${DateTime.now()}",
+                        level: VolcenLogLevel.info);
+                  } catch (e) {
+                    debugPrint("initVolcEngine error : $e");
+                  }
+                },
+                child: const Text('写日志')),
           ],
         ),
       ),
