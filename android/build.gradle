@@ -3,6 +3,12 @@ version '1.0'
 
 buildscript {
     repositories {
+        maven {
+            url "https://artifact.bytedance.com/repository/Volcengine/"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/byteX/"
+        }
         google()
         mavenCentral()
     }
@@ -14,6 +20,9 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
+        maven {
+            url "https://artifact.bytedance.com/repository/Volcengine/"
+        }
         google()
         mavenCentral()
     }
@@ -31,5 +40,9 @@ android {
 
     defaultConfig {
         minSdkVersion 16
+    }
+    dependencies{
+        implementation 'com.volcengine:apm_insight:1.4.9.cn-rc.5'
+        implementation 'com.volcengine:apm_insight_crash:1.4.6-rc.14'
     }
 }

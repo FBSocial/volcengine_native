@@ -1,6 +1,12 @@
 buildscript {
     ext.kotlin_version = '1.6.10'
     repositories {
+        maven {
+            url "https://artifact.bytedance.com/repository/Volcengine/"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/byteX/"
+        }
         google()
         mavenCentral()
     }
@@ -8,11 +14,15 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.volcengine:apm_insight_plugin:1.4.2"
     }
 }
 
 allprojects {
     repositories {
+        maven {
+            url "https://artifact.bytedance.com/repository/Volcengine/"
+        }
         google()
         mavenCentral()
     }
