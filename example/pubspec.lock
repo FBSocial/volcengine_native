@@ -454,7 +454,7 @@ packages:
       name: ve_apm
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.2"
+    version: "3.0.1"
   ve_code_gen:
     dependency: transitive
     description:
