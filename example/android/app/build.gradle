@@ -38,9 +38,9 @@ ApmPlugin {
     // 网络监控开关：监控okhttp3的网络请求
     okHttp3Switch = true
     // 白名单下的包进行插桩，需要填写要插装类所在的包名，支持前缀配置
-//    whiteList = ["com"]
+    whiteList = ["com"]
     // 黑名单包下类不进行插桩，可以配置包名和类名，没有可以填空
-//    blackList = ["com.xxx"]
+    blackList = []
 
 }
 
