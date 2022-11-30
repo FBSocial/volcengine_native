@@ -77,6 +77,7 @@ PODS:
     - Flutter
     - RangersAPM/APMLog (= 3.0.1)
     - RangersAPM/CN (= 3.0.1)
+    - RangersAPM/Flutter (= 3.0.1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -107,7 +108,7 @@ SPEC CHECKSUMS:
   RARegisterKit: 63bb5e7a57a6479496bcfe155d149c18bdbcd3ab
   ve_apm: 08244d0dba233e7b0877e081e5cba2278b9e7966
   ve_onekit: fa772851a16dc424b67bf8667543a5c7a948175c
-  volcengine_native: e3abf5fbbd591a642049a7c78def4b5ad24f93fa
+  volcengine_native: 9514d0ed455755f387c0f917a6bfaeb7af168b6f
 
 PODFILE CHECKSUM: 12d742572e54322e422a25b0793ab12fcb58d894
 
