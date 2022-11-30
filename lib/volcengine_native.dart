@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,12 +21,16 @@ class VolcengineNative {
   static Future<void> initVolcEngine(
       {required String appId,
       required String appToken,
-      String? channel}) async {
+      String? channel,
+      String? userId,
+      Map<String, String>? otherParams}) async {
     try {
       await _channel.invokeMethod("init_volc_engine", {
         "appId": appId,
         "appToken": appToken,
         "channel": channel ?? (Platform.isIOS ? "App Store" : "Android"),
+        "userId": userId ?? "",
+        "otherParams": otherParams ?? {}
       });
     } on PlatformException catch (e) {
       debugPrint("initVolcEngine error: $e");
