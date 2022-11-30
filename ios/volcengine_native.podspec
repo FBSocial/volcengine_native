@@ -21,12 +21,12 @@ A new Flutter volcengine native plugin.
   s.static_framework = true
   
   # 火山Flutter
-  s.dependency 'RangersAPM/APMLog', '3.0.1', :git => 'https://github.com/volcengine/volcengine-specs.git'
-  s.dependency 'RangersAPM/Flutter', '3.0.1', :git => 'https://github.com/volcengine/volcengine-specs.git'
-  s.dependency 'RangersAPM/CN', '3.0.1', :git => 'https://github.com/volcengine/volcengine-specs.git'
+  s.dependency 'RangersAPM/APMLog', '3.0.1'
+  s.dependency 'RangersAPM/Flutter', '3.0.1'
+  s.dependency 'RangersAPM/CN', '3.0.1'
   # 火山iOS
   # https://www.volcengine.com/docs/6431/68850#subspecs%E8%AF%B4%E6%98%8E
-  s.dependency 'RangersAPM/Crash', '3.0.1', :git => 'https://github.com/volcengine/volcengine-specs.git'
+  s.dependency 'RangersAPM/Crash', '3.0.1'
   s.dependency 'RangersAPM/WatchDog', '3.0.1'
   s.dependency 'RangersAPM/OOM', '3.0.1'
   s.dependency 'RangersAPM/LAG', '3.0.1'
