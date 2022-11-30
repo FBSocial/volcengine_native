@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:volcengine_native/volcengine_native.dart';
 import 'package:ve_apm/ve_apm.dart';
+// ignore: library_prefixes
 import 'package:ve_onekit/services/services.dart' as OKService;
 
 void main() {
-  // runApp(const MyApp());
-
   runTraceApp((observer) {
     HttpOverrides.global = ApmHttpOverrides(); //开启网络监控，如果不需要网络监控则不设置
     return MyApp(navigatorObserver: observer);
