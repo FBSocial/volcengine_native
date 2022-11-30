@@ -6,6 +6,8 @@ import android.content.Context;
 import android.util.Log;
 
 
+import android.text.TextUtils;
+
 import java.util.HashMap;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -33,6 +35,8 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
     private Context context;
+    private String userId;
+    private HashMap<String, String> customData = new HashMap();
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -48,13 +52,19 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             String appId = call.argument("appId");
             String appToken = call.argument("appToken");
             String channel = call.argument("channel");
-            String userId = call.argument("userId");
-            HashMap<String, String> otherParams = (HashMap) call.argument("otherParams");
-            initCrash(appId, appToken, channel, userId, otherParams);
-            initApm(appId, appToken, channel, userId);
+            initCrash(appId, appToken, channel);
+            initApm(appId, appToken, channel);
         } else if (call.method.equals("report_user_info")) {
             //上报用户信息
-            throw new RuntimeException("Monitor Exception");
+            userId = call.argument("userId");
+            String nickname = call.argument("nickname");
+            String env = call.argument("env");
+            if (TextUtils.isEmpty(nickname)) {
+                customData.put("nickname", nickname);
+            }
+            if (TextUtils.isEmpty(env)) {
+                customData.put("env", env);
+            }
         } else if (call.method.equals("enable_remote_log")) {
             //开启火山日志系统
 
@@ -63,7 +73,6 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             String log = call.argument("log");
             String level = call.argument("level");
             reportLog(level, log);
-            Log.i("VolcengineNativePlugin", ApmInsightAgent.getDid());
         } else {
             result.notImplemented();
         }
@@ -73,6 +82,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
     }
+
 
     private void reportLog(String level, String msg) {
         String tag = "FBLogger";
@@ -89,13 +99,10 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
         }
     }
 
-    private void initCrash(String appId, String appToken, String channel, String userId, HashMap<String, String> map) {
+    private void initCrash(String appId, String appToken, String channel) {
         MonitorCrash.Config config = MonitorCrash.Config.app(appId)
                 .token(appToken)// 设置鉴权token，可从平台应用信息处获取，token错误无法上报数据
-//              .versionCode(1)// 可选，默认取PackageInfo中的versionCode
-//              .versionName("1.0")// 可选，默认取PackageInfo中的versionName
                 .channel(channel)// 可选，设置App发布渠道，在平台可以筛选
-//              .url("www.xxx.com")// 默认不需要，私有化部署才配置上报地址
                 //可选，可以设置自定义did，不设置会使用内部默认的
                 .dynamicParams(new MonitorCrash.Config.IDynamicParams() {
                     @Override
@@ -110,14 +117,14 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
                 })
                 //可选，添加业务自定义数据，在崩溃详情页->现场数据展示
                 .customData(crashType -> {
-                    return map;
+                    return customData;
                 })
                 .build();
         MonitorCrash monitorCrash = MonitorCrash.init(context, config);
     }
 
 
-    public void initApm(String appId, String appToken, String channel, String userId) {
+    public void initApm(String appId, String appToken, String channel) {
         ApmInsightInitConfig.Builder builder = ApmInsightInitConfig.builder();
         //设置分配的appid
         builder.aid(appId);
