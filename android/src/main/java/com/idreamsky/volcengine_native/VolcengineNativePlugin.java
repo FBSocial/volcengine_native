@@ -51,7 +51,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             String userId = call.argument("userId");
             HashMap<String, String> otherParams = (HashMap) call.argument("otherParams");
             initCrash(appId, appToken, channel, userId, otherParams);
-            initApm(appId, appToken, channel);
+            initApm(appId, appToken, channel, userId);
         } else if (call.method.equals("report_user_info")) {
             //上报用户信息
             throw new RuntimeException("Monitor Exception");
