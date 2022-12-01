@@ -54,6 +54,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             String channel = call.argument("channel");
             initCrash(appId, appToken, channel);
             initApm(appId, appToken, channel);
+            result.success(null);
         } else if (call.method.equals("report_user_info")) {
             //上报用户信息
             userId = call.argument("userId");
@@ -65,14 +66,16 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             if (TextUtils.isEmpty(env)) {
                 customData.put("env", env);
             }
+            result.success(null);
         } else if (call.method.equals("enable_remote_log")) {
             //开启火山日志系统
-
+            result.success(null);
         } else if (call.method.equals("report_remote_log")) {
             //上报日志
             String log = call.argument("log");
             String level = call.argument("level");
             reportLog(level, log);
+            result.success(null);
         } else {
             result.notImplemented();
         }

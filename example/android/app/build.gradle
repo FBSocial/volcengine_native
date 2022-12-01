@@ -77,4 +77,5 @@ flutter {
 dependencies{
     implementation 'com.volcengine:apm_insight:1.4.9.cn-rc.5'
     implementation 'com.volcengine:apm_insight_crash:1.4.6-rc.14'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 }
