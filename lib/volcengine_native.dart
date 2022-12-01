@@ -85,9 +85,17 @@ class VolcengineNative {
   //   }
   // }
 
-  static Future<void> testCrash() async {
+  /*
+  type:
+闪退：crash1 | crash2 | crash3
+错误(网络): error
+卡顿: caton
+时间： event
+内存： memory
+   */
+  static Future<void> testCrash(String? type) async {
     try {
-      await _channel.invokeMethod("test_crash", {});
+      await _channel.invokeMethod("test_crash", {"type": type});
     } on PlatformException catch (e) {
       debugPrint("reportLog error: $e");
       rethrow;

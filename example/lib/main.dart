@@ -105,12 +105,12 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
                 onPressed: () {
                   try {
-                    VolcengineNative.testCrash();
+                    VolcengineNative.testCrash("crash1");
                   } catch (e) {
                     debugPrint("initVolcEngine error : $e");
                   }
                 },
-                child: const Text('奔溃测试'))
+                child: const Text('奔溃测试')),
           ],
         ),
       ),
