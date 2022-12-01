@@ -166,7 +166,7 @@ static float dangerousMemoryThreshold = 1024.0;
                extraValue:@{@"extra1":@"extravalue"}];
     }
     
-    //内存优化
+    //内存溢出
     if([type isEqualToString:@"memory"]){
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
                    while (1) {

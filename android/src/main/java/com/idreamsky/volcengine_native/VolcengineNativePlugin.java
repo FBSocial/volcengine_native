@@ -3,11 +3,14 @@ package com.idreamsky.volcengine_native;
 import androidx.annotation.NonNull;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 
 import android.text.TextUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -23,6 +26,7 @@ import com.bytedance.apm.insight.ApmInsight;
 import com.bytedance.apm.insight.ApmInsightInitConfig;
 import com.bytedance.apm.insight.IDynamicParams;
 import com.bytedance.apm.insight.ApmInsightAgent;
+import com.bytedance.memory.test.OOMMaker;
 
 
 /**
@@ -37,6 +41,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
     private Context context;
     private String userId;
     private HashMap<String, String> customData = new HashMap();
+    MonitorCrash mMonitorCrash;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -75,6 +80,11 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
             String log = call.argument("log");
             String level = call.argument("level");
             reportLog(level, log);
+            result.success(null);
+        } else if (call.method.equals("test_crash")) {
+            //上报日志
+            String type = call.argument("type");
+            testCrash(type);
             result.success(null);
         } else {
             result.notImplemented();
@@ -123,7 +133,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
                     return customData;
                 })
                 .build();
-        MonitorCrash monitorCrash = MonitorCrash.init(context, config);
+        mMonitorCrash = MonitorCrash.init(context, config);
     }
 
 
@@ -194,4 +204,51 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
         //初始化自定日志，配置自定义日志最大占用磁盘，内部一般配置20，代表最大20M磁盘占用。1.4.1版本开始存在这个api
         VLog.init(context, 20);
     }
+
+    private void testCrash(String type) {
+        if (type.equals("crash1")) {
+            //数组越界闪退
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add("test");
+            Log.e("test", temp.get(20));
+        } else if (type.equals("crash2")) {
+            //ANR模拟
+            SystemClock.sleep(20000);
+        } else if (type.equals("crash3")) {
+            throw new RuntimeException("Monitor Exception");
+        } else if (type.equals("error")) {
+            //错误 网络错误
+            mMonitorCrash.reportCustomErr("testUserException", "type1", new RuntimeException());
+        } else if (type.equals("caton")) {
+            //卡顿
+            try {
+                Thread.sleep(2600);
+                testSeriousBlock();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (type.equals("event")) {
+            //事件分析
+            HashMap<String, String> dimension = new HashMap<>();
+            //维度值
+            dimension.put("key1", "value1");
+            dimension.put("key2", "value2");
+            HashMap<String, Double> metric = new HashMap<>();
+            //指标值
+            metric.put("metric1", (double) 10);
+            metric.put("metric2", 8.8);
+            ApmInsightAgent.monitorEvent("fb_event_name1", dimension, metric);
+        } else if (type.equals("memory")) {
+            //内存溢出
+            OOMMaker.createOOM();
+        }
+    }
+
+    private void testSeriousBlock() {
+        try {
+            Thread.sleep(2600);
+        } catch (Exception e) {
+        }
+    }
+
 }
