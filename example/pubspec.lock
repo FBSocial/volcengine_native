@@ -448,6 +448,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  ve_alog:
+    dependency: transitive
+    description:
+      name: ve_alog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   ve_apm:
     dependency: transitive
     description:

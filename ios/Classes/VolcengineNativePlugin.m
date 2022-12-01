@@ -27,6 +27,9 @@
   }else if([@"report_remote_log" isEqualToString: call.method]){
       //日志上报
       [self uploadLog:call.arguments result:result];
+  }else if([@"test_crash" isEqualToString: call.method]){
+      //test
+      [self testCrash];
   }else {
     result(FlutterMethodNotImplemented);
   }
@@ -97,5 +100,26 @@
         RANGERSAPM_ALOG_ERROR(@"FBLogger", log);
     }
     result(@YES);
+}
+
+-(void)testCrash{
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            NSArray *array = [NSArray array];
+//            [array objectAtIndex:10];
+//        });
+//    NSArray *array = [NSArray array];
+//    [array objectAtIndex:10];
+//    id ss = array[100];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        UIView *bb = [UIView new];
+        bb.backgroundColor = [UIColor redColor];
+
+    });
+    
+//    [self testCrash];
+    
+//    for(int i = 0; i < 1000000;i ++){
+//        RANGERSAPM_ALOG_DEBUG(@"FBLogger", @"logloglogloglog");
+//    }
 }
 @end
