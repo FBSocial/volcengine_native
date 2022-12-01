@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -59,27 +58,44 @@ class VolcengineNative {
   /*
   开启火山日志系统
    */
-  static Future<void> enableRemoteLog() async {
-    try {
-      await _channel.invokeMethod("enable_remote_log", {});
-    } on PlatformException catch (e) {
-      debugPrint("enableRemoteLog error: $e");
-      rethrow;
-    }
-  }
+  // static Future<void> enableRemoteLog() async {
+  //   try {
+  //     await _channel.invokeMethod("enable_remote_log", {});
+  //   } on PlatformException catch (e) {
+  //     debugPrint("enableRemoteLog error: $e");
+  //     rethrow;
+  //   }
+  // }
 
   /*
   上报日志
    */
-  static Future<void> reportLog({
-    required String log,
-    VolcenLogLevel level = VolcenLogLevel.debug,
-  }) async {
+  // static Future<void> reportLog({
+  //   required String log,
+  //   VolcenLogLevel level = VolcenLogLevel.debug,
+  // }) async {
+  //   try {
+  //     await _channel.invokeMethod("report_remote_log", {
+  //       "log": log,
+  //       "level": level.name,
+  //     });
+  //   } on PlatformException catch (e) {
+  //     debugPrint("reportLog error: $e");
+  //     rethrow;
+  //   }
+  // }
+
+  /*
+  type:
+闪退：crash1 | crash2 | crash3
+错误(网络): error
+卡顿: caton
+时间： event
+内存： memory
+   */
+  static Future<void> testCrash(String? type) async {
     try {
-      await _channel.invokeMethod("report_remote_log", {
-        "log": log,
-        "level": level.name,
-      });
+      await _channel.invokeMethod("test_crash", {"type": type});
     } on PlatformException catch (e) {
       debugPrint("reportLog error: $e");
       rethrow;

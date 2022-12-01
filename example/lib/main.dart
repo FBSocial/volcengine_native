@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:volcengine_native/volcengine_native.dart';
 import 'package:ve_apm/ve_apm.dart';
 // ignore: library_prefixes
-import 'package:ve_onekit/services/services.dart' as OKService;
+// import 'package:ve_onekit/services/services.dart' as OKService;
+import 'package:ve_alog/ve_alog.dart';
 
 void main() {
   runTraceApp((observer) {
@@ -12,6 +13,8 @@ void main() {
     return MyApp(navigatorObserver: observer);
   });
 }
+
+const alog = VeAlogImpl.instance;
 
 class MyApp extends StatefulWidget {
   final NavigatorObserver navigatorObserver;
@@ -42,7 +45,9 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   try {
                     VolcengineNative.initVolcEngine(
-                        appId: "appId", appToken: "appToken");
+                        appId: "appID",
+                        appToken: "AppToken",
+                        channel: "app store");
                   } catch (e) {
                     debugPrint("initVolcEngine error : $e");
                   }
@@ -60,37 +65,52 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
                 onPressed: () {
                   try {
-                    VolcengineNative.enableRemoteLog();
+                    // VolcengineNative.enableRemoteLog();
+                    alog.enable();
                   } catch (e) {
                     debugPrint("initVolcEngine error : $e");
                   }
                 },
                 child: const Text('开启火山远程日志')),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       try {
+            //         VolcengineNative.reportLog(
+            //             log: "log--- ${DateTime.now()}",
+            //             level: VolcenLogLevel.info);
+            //       } catch (e) {
+            //         debugPrint("initVolcEngine error : $e");
+            //       }
+            //     },
+            //     child: const Text('向原生写日志')),
             ElevatedButton(
                 onPressed: () {
                   try {
-                    VolcengineNative.reportLog(
-                        log: "log--- ${DateTime.now()}",
-                        level: VolcenLogLevel.info);
-                  } catch (e) {
-                    debugPrint("initVolcEngine error : $e");
-                  }
-                },
-                child: const Text('向原生写日志')),
-            ElevatedButton(
-                onPressed: () {
-                  try {
-                    final _alog = OKService.serviceManager
-                        .getService<OKService.VeAlog>()!;
-                    _alog.debug(tag: 'test', message: 'debug');
-                    _alog.info(tag: 'test', message: 'info');
-                    _alog.warn(tag: 'test', message: 'warn');
-                    _alog.error(tag: 'test', message: 'error');
+                    alog.debug(tag: 'test', message: 'debug');
+                    alog.info(tag: 'test', message: 'info');
+                    alog.warn(tag: 'test', message: 'warn');
+                    alog.error(tag: 'test', message: 'error');
+
+                    // final _alog = OKService.serviceManager
+                    //     .getService<OKService.VeAlog>()!;
+                    // _alog.debug(tag: 'test', message: 'debug');
+                    // _alog.info(tag: 'test', message: 'info');
+                    // _alog.warn(tag: 'test', message: 'warn');
+                    // _alog.error(tag: 'test', message: 'error');
                   } catch (e) {
                     debugPrint("initVolcEngine error : $e");
                   }
                 },
                 child: const Text('Flutter写日志')),
+            ElevatedButton(
+                onPressed: () {
+                  try {
+                    VolcengineNative.testCrash("crash1");
+                  } catch (e) {
+                    debugPrint("initVolcEngine error : $e");
+                  }
+                },
+                child: const Text('奔溃测试')),
           ],
         ),
       ),

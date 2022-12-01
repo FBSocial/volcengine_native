@@ -3,6 +3,14 @@
 #import "RangersAPM+DebugLog.h"
 #import "RangersAPM+ALog.h"
 
+//use for test case
+#import "RangersAPM+UserException.h"
+#import "RangersAPM+EventMonitor.h"
+#import <mach/mach.h>
+//设置的内存采集启动阈值，当APP内存超过此值时将启动内存优化模块，采集APP内存状态
+static float dangerousMemoryThreshold = 1024.0;
+
+
 @implementation VolcengineNativePlugin
 
 
@@ -27,6 +35,9 @@
   }else if([@"report_remote_log" isEqualToString: call.method]){
       //日志上报
       [self uploadLog:call.arguments result:result];
+  }else if([@"test_crash" isEqualToString: call.method]){
+      //test
+      [self testCrash:call.arguments result:result];
   }else {
     result(FlutterMethodNotImplemented);
   }
@@ -98,4 +109,108 @@
     }
     result(@YES);
 }
+
+-(void)testCrash:(NSDictionary*)arguments result:(FlutterResult)result{
+    NSString *type = [arguments objectForKey:@"type"];
+    
+    //数组越界闪退
+    if([type isEqualToString:@"crash1"]){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSArray *array = [NSArray array];
+                [array objectAtIndex:10];
+            });
+    }
+    
+    //子线程操作UI闪退
+    if([type isEqualToString:@"crash2"]){
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            UIView *bb = [UIView new];
+            bb.backgroundColor = [UIColor redColor];
+
+        });
+    }
+    
+    // 死循环
+    if([type isEqualToString:@"crash3"]){
+        while (true) {
+            NSLog(@"死循环");
+        }
+    }
+    
+    
+    //错误 网络错误
+    if([type isEqualToString:@"error"]){
+        [RangersAPM trackAllThreadsLogExceptionType:@"testUserException"
+                                       skippedDepth:0
+                                     customParams:@{@"testCustomKey":@"testCustomValue"}
+                                          filters:@{@"testFilterKey":@"testFilterValue"}
+                                         callback:^(NSError * _Nullable error){
+                                            NSLog(@"%@",error);
+                                         }
+        ];
+    }
+   
+    //卡顿
+    if([type isEqualToString:@"caton"]){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            sleep(5);
+        });
+    }
+    
+    //事件分析
+    //事件分析模块是一个自埋点功能，需要您手动调用接口来进行事件的记录
+    if([type isEqualToString:@"event"]){
+        [RangersAPM trackEvent:@"fb_event_name1"
+                 metrics:@{@"metric1":@(0)}
+                dimension:@{@"dimension1":@"test"}
+               extraValue:@{@"extra1":@"extravalue"}];
+    }
+    
+    //内存优化
+    if([type isEqualToString:@"memory"]){
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                   while (1) {
+                       if (!overMemoryThreshold()) {
+                           CGSize size = CGSizeMake(1024 * 8, 1024 * 8 * 9.0f/16.0);
+                           const size_t bitsPerComponent = 8;
+                           const size_t bytesPerRow = size.width * 4;
+                           CGContextRef ctx = CGBitmapContextCreate(calloc(sizeof(unsigned char), bytesPerRow * size.height), size.width, size.height, bitsPerComponent, bytesPerRow, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
+                           CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
+                           CGContextFillRect(ctx, CGRectMake(0, 0, size.width, size.height));
+                           sleep(1);
+                       } else {
+                           break;
+                       }
+                   }
+               });
+    }
+    result(@YES);
+}
+
+//计算APP当前的内存占用，当内存占用超过内存采集启动阈值时，返回true，否则返回false
+bool overMemoryThreshold(void)
+{
+    kern_return_t kr;
+            
+    task_vm_info_data_t task_vm;
+    mach_msg_type_number_t task_vm_count = TASK_VM_INFO_COUNT;
+    kr = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t) &task_vm, &task_vm_count);
+               
+    if (kr == KERN_SUCCESS) {
+        printf("Current App Memory is :%f\n\n", task_vm.phys_footprint / (1024.0 * 1024.0));
+        if (task_vm.phys_footprint / (1024.0 * 1024.0) > dangerousMemoryThreshold) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+        
+    return false;
+}
+
 @end
+
+
+
+
+
