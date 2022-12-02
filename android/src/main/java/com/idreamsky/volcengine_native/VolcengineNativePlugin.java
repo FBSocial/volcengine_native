@@ -132,6 +132,7 @@ public class VolcengineNativePlugin implements FlutterPlugin, MethodCallHandler 
                 .customData(crashType -> {
                     return customData;
                 })
+                .debugMode(true)
                 .build();
         mMonitorCrash = MonitorCrash.init(context, config);
     }
