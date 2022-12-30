@@ -5,6 +5,9 @@ buildscript {
     repositories {
         maven {
             url "https://artifact.bytedance.com/repository/Volcengine/"
+            content {
+                excludeGroup 'io.flutter'
+            }
         }
         maven {
             url "https://artifact.bytedance.com/repository/byteX/"
@@ -22,6 +25,9 @@ rootProject.allprojects {
     repositories {
         maven {
             url "https://artifact.bytedance.com/repository/Volcengine/"
+            content {
+                excludeGroup 'io.flutter'
+            }
         }
         google()
         mavenCentral()

@@ -454,14 +454,14 @@ packages:
       name: ve_alog
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.5"
   ve_apm:
     dependency: transitive
     description:
       name: ve_apm
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.3"
+    version: "2.5.4"
   ve_code_gen:
     dependency: transitive
     description:
@@ -475,7 +475,7 @@ packages:
       name: ve_onekit
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.6"
+    version: "0.1.1"
   vector_math:
     dependency: transitive
     description:
