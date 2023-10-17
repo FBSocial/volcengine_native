@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  ve_apm: ^2.5.4
-  ve_alog: ^0.0.5
+  ve_apm: ^3.0.6
+  ve_alog: ^0.0.7
 
 dev_dependencies:
   flutter_test:
